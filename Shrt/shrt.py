@@ -4,14 +4,16 @@ import base64
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 
-app = Flask('Shrt')
-app.config.from_object('Shrt')
+app = Flask(__name__)
+app.config.from_object(__name__)
 
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'shrt.db'),
-    SECRET_KEY='poniesonrainbows',
+    SECRET_KEY='rainbows',
 ))
 app.config.from_envvar('SHRT_SETTINGS', silent=True)
+
+#DB setup
 
 def get_db():
     if not hasattr(g, 'sqlite_db'):
@@ -39,26 +41,44 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
+# Routes
+
 @app.route('/')
 def index():
     return render_template('layout.html')
 
 @app.route('/shorten', methods=['POST'])
 def shorten_link():
+    urlEncoded = base64.b64encode(bytes(str(request.form['original']), 'UTF-8'))
     db = get_db()
-    db.execute('INSERT INTO links (originalURL) VALUES (?)',
-                [base64.b64encode(request.form['original']) ])
-    db.commit()
-    cur = db.execute('SELECT id FROM links WHERE originalURL = (?)',
-                    [base64.b64encode(request.form['original'])])
-    link = cur.fetchone()
-    return render_template('layout.html', link=link[0])
 
-@app.route('/short/<int:short>', methods=['POST', 'GET'])
-def reroute(short):
+    db.execute('INSERT INTO links (originalURL) VALUES (?)' ,
+                [ urlEncoded ])
+    db.commit()
+
+    cur = db.execute('SELECT id FROM links WHERE originalURL = (?)',
+                    [ urlEncoded ])
+    urlId = cur.fetchone()[0]
+
+    db.execute('UPDATE links SET encodedURL = (?) WHERE originalURL = (?)' ,
+                [ base64.urlsafe_b64encode(bytes(str(urlId), 'UTF-8')) , urlEncoded ])
+
+    encodedLink = str(base64.urlsafe_b64encode(bytes(str(urlId), 'UTF-8')), 'UTF-8')
+
+    return render_template('layout.html', link=encodedLink)
+
+@app.route('/short/<url>', methods=['POST', 'GET'])
+def reroute(url):
     db = get_db()
+    decodedLink = str(base64.urlsafe_b64decode(url), 'UTF-8')
+
     cur = db.execute('SELECT originalURL FROM links WHERE id = (?)',
-                    [short])
-    link = cur.fetchone()
-    link = base64.b64decode(link[0])
+                    [ decodedLink ])
+
+    urlId = str(cur.fetchone()[0], 'UTF-8')
+    print 
+
+    link = base64.b64decode(bytes(str(urlId), 'UTF-8'))
+    print (link)
+
     return redirect(link)

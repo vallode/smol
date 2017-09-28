@@ -1,7 +1,0 @@
-{% extends "layout.html" %}
-{% block body %}
-    <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
-      <input type='text' name='original'/>
-      <input type='submit' value='Shorten'/>
-    </form>
-{% endblock %}
