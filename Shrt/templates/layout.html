@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shrt</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class='header'>
+    <h1>shrt</h1>
+  </div>
+  
+  <div class='submit'>
+    <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
+      {% if link %}
+      <input type='text' name='original' value='http://127.0.0.1:5000/short/{{ link }}'/>
+      {% else %}
+      <input type='text' name='original'/>
+      {% endif %}
+      <input type='submit' value='Shorten'/>
+    </form>
+  </div>
+</body>
+</html>

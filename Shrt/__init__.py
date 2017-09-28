@@ -1,0 +1,1 @@
+from .shrt import app
