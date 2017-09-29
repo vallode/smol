@@ -1,0 +1,1 @@
+from .Smol import app

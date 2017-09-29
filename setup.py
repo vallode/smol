@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name='Shrt',
-    packages=['Shrt'],
+    name='Smol',
+    packages=['Smol'],
     include_package_data=True,
     install_requires=[
         'flask',

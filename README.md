@@ -1,4 +1,4 @@
-# Shrt
+# Smol
 
 A stupid simple URL shortner
 

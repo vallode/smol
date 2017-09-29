@@ -8,10 +8,10 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'shrt.db'),
+    DATABASE=os.path.join(app.root_path, 'smol.db'),
     SECRET_KEY='rainbows',
 ))
-app.config.from_envvar('SHRT_SETTINGS', silent=True)
+app.config.from_envvar('SMOL_SETTINGS', silent=True)
 
 #DB setup
 
@@ -34,7 +34,7 @@ def init_db():
 @app.cli.command('initdb')
 def initdb_command():
     init_db()
-    print('Initialized the database.')
+    print('SMOL initialized the database.')
 
 @app.teardown_appcontext
 def close_db(error):
@@ -67,7 +67,7 @@ def shorten_link():
 
     return render_template('layout.html', link=encodedLink)
 
-@app.route('/short/<url>', methods=['POST', 'GET'])
+@app.route('/s/<url>', methods=['POST', 'GET'])
 def reroute(url):
     db = get_db()
     decodedLink = str(base64.urlsafe_b64decode(url), 'UTF-8')
