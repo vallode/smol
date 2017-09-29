@@ -31,6 +31,11 @@ def init_db():
         db.cursor().executescript(f.read())
     db.commit()
 
+def checkURL(url):
+    if url.find("http://") != 0 and url.find("https://") != 0:
+        url = "http://" + url
+    return url
+
 @app.cli.command('initdb')
 def initdb_command():
     init_db()
@@ -79,4 +84,4 @@ def reroute(url):
 
     link = base64.b64decode(bytes(str(urlId), 'UTF-8'))
 
-    return redirect(url_for(link))
+    return redirect(checkURL(str(link, 'UTF-8')))
