@@ -79,6 +79,5 @@ def reroute(url):
     print 
 
     link = base64.b64decode(bytes(str(urlId), 'UTF-8'))
-    print (link)
 
-    return redirect(link)
+    return redirect(url_for(link))
