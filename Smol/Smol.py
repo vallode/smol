@@ -76,7 +76,6 @@ def reroute(url):
                     [ decodedLink ])
 
     urlId = str(cur.fetchone()[0], 'UTF-8')
-    print 
 
     link = base64.b64decode(bytes(str(urlId), 'UTF-8'))
 
