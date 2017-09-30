@@ -1,5 +1,6 @@
 smol.egg-info/
 Smol.egg-info/
+Smol/smol.db
 Smol/__pycache__
 Smol/static/style.scss
 Smol/static/style.css.map
