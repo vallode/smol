@@ -87,5 +87,5 @@ def reroute(url):
     return redirect(checkURL(str(link, 'UTF-8')))
 
 @app.route('/.well-known/acme-challenge/YvsqSnua4RQ5o0vddgduYtV3ZhZpblW7NdLSpQz7pCo')
-def index():
+def certbot():
     return 'YvsqSnua4RQ5o0vddgduYtV3ZhZpblW7NdLSpQz7pCo.hQqocTxi0bFzxCgsKLkZeMYIXUsp9aqg9QRVVOjRHPc'
