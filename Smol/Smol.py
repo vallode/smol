@@ -85,3 +85,7 @@ def reroute(url):
     link = base64.b64decode(bytes(str(urlId), 'UTF-8'))
 
     return redirect(checkURL(str(link, 'UTF-8')))
+
+@app.route('/.well-known/acme-challenge/YvsqSnua4RQ5o0vddgduYtV3ZhZpblW7NdLSpQz7pCo')
+def index():
+    return 'YvsqSnua4RQ5o0vddgduYtV3ZhZpblW7NdLSpQz7pCo.hQqocTxi0bFzxCgsKLkZeMYIXUsp9aqg9QRVVOjRHPc'
