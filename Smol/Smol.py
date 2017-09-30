@@ -72,7 +72,7 @@ def shorten_link():
 
     return render_template('layout.html', link=encodedLink)
 
-@app.route('/s/<url>', methods=['POST', 'GET'])
+@app.route('/s/<path:url>', methods=['POST', 'GET'])
 def reroute(url):
     db = get_db()
     decodedLink = str(base64.urlsafe_b64decode(url), 'UTF-8')

@@ -14,7 +14,7 @@
   <div class='submit'>
     <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
       {% if link %}
-      <input type='text' name='original' value='smol.link/s/{{ link }}'/>
+      <input type='text' name='original' value='http://smol.link/s/{{ link }}'/>
       {% else %}
       <input type='text' name='original'/>
       {% endif %}
