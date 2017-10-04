@@ -14,21 +14,17 @@ body {
   font-size: 14px;
   font-family: 'Roboto', sans serif; }
 
-.header {
+header {
   text-align: center; }
-  .header h1 {
+  header h1 {
     letter-spacing: 3px;
     margin: 0;
     line-height: 1;
     font-size: 8em;
     color: #e96020; }
-  .header p {
+  header p {
     margin: 0;
     color: #f1f1f1; }
-
-.flash {
-  color: #f1f1f1;
-  text-align: center; }
 
 form {
   display: flex;
@@ -62,3 +58,5 @@ form {
 
 strong {
   color: #e96020; }
+
+/*# sourceMappingURL=style.css.map */
