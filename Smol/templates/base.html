@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
 <head>
 	<title>smol</title>
 	<link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="style.css") }}'>
@@ -14,11 +14,14 @@
 	<div class='submit'>
 		<form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
 			{% if link %}
-				<input type='text' name='original' value='http://www.smol.link/s/{{ link }}'/>
+				<input title='Link' id='linkIO' type='text' name='original' value='http://www.smol.link/s/{{ link }}'/>
+				<script type="text/javascript">
+					document.querySelector('#linkIO').select()
+				</script>
 			{% else %}
-				<input type='text' name='original'/>
+				<input title='Link' type='text' name='original'/>
 			{% endif %}
-				<input type='submit' value='Shorten'/>
+				<input title='Submit' type='submit' value='Shorten'/>
 		</form>
 	</div>
 </body>
