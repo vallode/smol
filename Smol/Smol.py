@@ -39,8 +39,6 @@ def checkURL(url):
 
 	return url
 
-
-
 @app.cli.command('initdb')
 def initdb_command():
 	init_db()
@@ -53,8 +51,9 @@ def close_db(error):
 
 # Routes
 
-@app.route('/')
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
 	return render_template('base.html')
 
 @app.route('/shorten', methods=['POST'])
