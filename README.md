@@ -1,10 +1,6 @@
 # Smol
 
-A stupid simple URL shortner
+A stupid simple URL shortner mostly for personal use
 
-## Build flow
-
-`source {your environment}`
-``
-
-Currently in a beta format, links will be wiped but is reliable enough to use.
+Currently in a beta format, links will be wiped but is 
+reliable enough to use.
