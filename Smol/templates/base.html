@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-	<title>smol</title>
-	<link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="style.css") }}'>
-	<link rel='icon' type='image/png' href='{{ url_for("static", filename="favicon.png") }}'>
+    <title>smol</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="style.css") }}'>
+    <link rel='icon' type='image/png' href='{{ url_for("static", filename="favicon.png") }}'>
 </head>
 <body>
-	<header>
-		<h1>smol</h1>
-		<p>Disclaimer: The links here <strong>WILL</strong> go down, this is a <strong>BETA</strong></p>
-	</header>
+<header>
+    <h1>smol</h1>
+    <p>Disclaimer: The links here <strong>WILL</strong> go down, this is a <strong>BETA</strong></p>
+</header>
 
-	<div class='submit'>
-		<form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
-			{% if link %}
-				<input title='Link' id='linkIO' type='text' name='original' value='http://www.smol.link/s/{{ link }}'/>
-				<script type="text/javascript">
-					document.querySelector('#linkIO').select()
-				</script>
-			{% else %}
-				<input title='Link' type='text' name='original'/>
-			{% endif %}
-				<input title='Submit' type='submit' value='Shorten'/>
-		</form>
-	</div>
+<div class='submit'>
+    <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
+        {% if link %}
+            <input title='Link' id='linkIO' type='text' name='original' value='http://www.smol.link/s/{{ link }}'/>
+            <script type="text/javascript">
+                document.querySelector('#linkIO').select()
+            </script>
+        {% else %}
+            <input title='Link' type='text' name='original'/>
+        {% endif %}
+        <input title='Submit' type='submit' value='Shorten'/>
+    </form>
+</div>
 </body>
 </html>
