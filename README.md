@@ -1,4 +1,4 @@
-# Smol
+# [Smol]('http://smol.link')
 
 A stupid simple URL shortner mostly for personal use
 
