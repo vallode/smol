@@ -1,29 +1,62 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-    <title>smol</title>
+    <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta property='og:image' content='{{ url_for("static", filename="favicon.png") }}'>
+    <meta property='og:title' content='Smol Link'>
+    <meta property=og:locale content='en_US'>
+    <meta name='author' content='Mariusz Zarzycki'>
+    <meta name='description' content='Convert your long and boring links into a fancy smol link'>
+    <meta property='og:description' content='Convert your long and boring links into a fancy smol link'>
+    <meta>
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@Vallode_">
+    <meta name="twitter:creator" content="@Mariusz Zarzycki">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-106151067-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-106151067-2');
+    </script>
+
     <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="style.css") }}'>
     <link rel='icon' type='image/png' href='{{ url_for("static", filename="favicon.png") }}'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <title>Smol Link</title>
 </head>
 <body>
-<header>
-    <h1>smol</h1>
-    <p>Disclaimer: The links here <strong>WILL</strong> go down, this is a <strong>BETA</strong></p>
-</header>
+<main>
+    <header>
+        <h1>smol</h1>
+        <p>Disclaimer: The links here <strong>WILL</strong> go down, this is a <strong>BETA</strong></p>
+    </header>
 
-<div class='submit'>
-    <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
-        {% if link %}
-            <input title='Link' id='linkIO' type='text' name='original' value='http://www.smol.link/s/{{ link }}'/>
-            <script type="text/javascript">
-                document.querySelector('#linkIO').select()
-            </script>
-        {% else %}
-            <input title='Link' type='text' name='original'/>
-        {% endif %}
-        <input title='Submit' type='submit' value='Shorten'/>
-    </form>
-</div>
+    <div class='submit'>
+        <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
+            {% if link %}
+                <input title='Link' id='linkIO' type='text' name='original' value='http://www.smol.link/s/{{ link }}'/>
+                <script type="text/javascript">
+                    document.querySelector('#linkIO').select()
+                </script>
+            {% else %}
+                <input title='Link' type='text' name='original'/>
+            {% endif %}
+            <input title='Submit' type='submit' value='Shorten'/>
+        </form>
+    </div>
+</main>
+<footer>
+    <a href='https://github.com/vallode' target='_blank' rel='noopener noreferrer'>
+        <img src='{{ url_for("static", filename="github.svg") }}' alt='github'>
+    </a>
+    <a href='https://vallode.cf' target='_blank' rel='noopener noreferrer'>
+        <img src='{{ url_for("static", filename="vallode.svg") }}' alt='github'>
+    </a>
+</footer>
 </body>
 </html>
