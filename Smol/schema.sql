@@ -1,6 +1,6 @@
-drop table if exists links;
-create table links (
+DROP TABLE IF EXISTS links;
+CREATE TABLE links (
   id integer primary key autoincrement,
-  'originalURL' text not null,
+  'originalURL' text,
   'encodedURL' text
 );

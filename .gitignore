@@ -4,6 +4,7 @@ Smol/__pycache__
 Smol/static/style.scss
 Smol/static/style.css.map
 Smol/static/.sass-cache
+smol.db
 smol_env/
 __pycache__/
 .idea/

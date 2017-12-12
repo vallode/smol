@@ -10,14 +10,8 @@ app.config.from_object(__name__)
 
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'smol.db'),
-    SECRET_KEY='rainbows',
-    USERNAME='admin',
-    PASSWORD='default'
 ))
 app.config.from_envvar('SMOL_SETTINGS', silent=True)
-
-
-# DB setup
 
 
 def get_db():
@@ -39,14 +33,18 @@ def init_db():
     db.commit()
 
 
-# URL check
-
-
-def checkURL(url):
-    if url.startswith('http://') == 0 and url.startswith('https://') == 0:
+def check_url(url):
+    if url.startswith('http://') and url.startswith('https://'):
         url = 'http://' + url
-
     return url
+
+
+def encode(u):
+    return str(base64.b64encode(bytes(str(u), 'UTF-8')), 'UTF-8')
+
+
+def decode(u):
+    return str(base64.b64decode(bytes(str(u), 'UTF-8')), 'UTF-8')
 
 
 @app.cli.command('initdb')
@@ -61,42 +59,39 @@ def close_db(error):
         g.sqlite_db.close()
 
 
-# Routes
-
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
+@app.route('/')
+def index():
     return render_template('base.html')
 
 
-@app.route('/shorten', methods=['POST'])
+@app.route('/shorten')
 def shorten_link():
-    url = checkURL(request.form['original'])
-    urlEncoded = str(base64.b64encode(bytes(str(url), 'UTF-8')), 'UTF-8')
+    if request.method == 'GET':
+        return index()
+
+    url = check_url(request.form['original'])
+    url = encode(url)
     db = get_db()
 
-    db.execute('INSERT INTO links (originalURL) VALUES (?)', [urlEncoded])
+    db.execute('INSERT INTO links (originalURL) VALUES (?)', [url])
     db.commit()
     cur = db.execute('SELECT last_insert_rowid()')
 
-    curId = (cur.fetchone()[0])
-    idEncoded = str(base64.urlsafe_b64encode(bytes(str(curId), 'UTF-8')), 'UTF-8')
+    cur_id = (cur.fetchone()[0])
+    id_encoded = encode(cur_id)
 
-    db.execute('UPDATE links SET encodedURL = (?) WHERE id = (?)', [idEncoded, curId])
+    db.execute('UPDATE links SET encodedURL = (?) WHERE id = (?)', [id_encoded, cur_id])
 
-    return render_template('base.html', link=idEncoded)
+    return render_template('base.html', link=id_encoded)
 
 
-@app.route('/s/<path:url>', methods=['POST', 'GET'])
-def reroute(url):
+@app.route('/<link>', methods=['POST', 'GET'])
+def reroute(link):
     db = get_db()
-    idDecoded = str(base64.urlsafe_b64decode(url), 'UTF-8')
+    link_id = decode(link)
 
-    cur = db.execute('SELECT originalURL FROM links WHERE id = (?)', [idDecoded])
+    cur = db.execute('SELECT originalURL FROM links WHERE id = (?)', [link_id])
 
-    curId = (cur.fetchone()[0])
+    URL = decode(cur.fetchone()[0])
 
-    link = str(base64.b64decode(bytes(curId, 'UTF-8')), 'UTF-8')
-
-    return redirect(link)
+    return redirect(URL)
