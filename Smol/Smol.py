@@ -34,16 +34,6 @@ def init_db():
     db.commit()
 
 
-def check_url(url):
-    if not validators.url(url):
-        print('invalid')
-        return index()
-
-    if url.startswith('http://') == 0 and url.startswith('https://') == 0:
-        url = 'http://' + url
-    return url
-
-
 def encode(u):
     return str(base64.b64encode(bytes(str(u), 'UTF-8')), 'UTF-8')
 
@@ -77,8 +67,7 @@ def shorten_link():
     if not validators.url(request.form['original']):
         return render_template('base.html', error='Invalid link, please provide a valid URL')
 
-    url = request.form['original']
-    url = encode(url)
+    url = encode(request.form['original'])
     db = get_db()
 
     db.execute('INSERT INTO links (originalURL) VALUES (?)', [url])
