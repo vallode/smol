@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import base64
+import validators
 from flask import Flask, request, session, g, redirect, \
     url_for, abort, \
     render_template, flash
@@ -34,6 +35,10 @@ def init_db():
 
 
 def check_url(url):
+    if not validators.url(url):
+        print('invalid')
+        return index()
+
     if url.startswith('http://') == 0 and url.startswith('https://') == 0:
         url = 'http://' + url
     return url
@@ -69,7 +74,10 @@ def shorten_link():
     if request.method == 'GET':
         return index()
 
-    url = check_url(request.form['original'])
+    if not validators.url(request.form['original']):
+        return render_template('base.html', error='Invalid link, please provide a valid URL')
+
+    url = request.form['original']
     url = encode(url)
     db = get_db()
 
