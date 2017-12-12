@@ -100,7 +100,3 @@ def reroute(url):
     link = str(base64.b64decode(bytes(curId, 'UTF-8')), 'UTF-8')
 
     return redirect(link)
-
-@app.route('/elizabeth')
-def elizabeth():
-    return 'You are amazing and I <3 you :)'
