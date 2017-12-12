@@ -64,7 +64,7 @@ def index():
     return render_template('base.html')
 
 
-@app.route('/shorten')
+@app.route('/shorten', methods=['POST', 'GET'])
 def shorten_link():
     if request.method == 'GET':
         return index()
