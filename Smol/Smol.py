@@ -34,7 +34,7 @@ def init_db():
 
 
 def check_url(url):
-    if url.startswith('http://') and url.startswith('https://'):
+    if url.startswith('http://') == 0 and url.startswith('https://') == 0:
         url = 'http://' + url
     return url
 
