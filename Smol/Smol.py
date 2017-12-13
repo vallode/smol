@@ -61,18 +61,21 @@ def shorten_link():
     if not validators.url(request.form['original']):
         return render_template('base.html', error='Invalid link, please provide a valid URL')
 
-    db = get_db()
-    cur = db.execute('INSERT INTO links (originalURL) VALUES (?)', [encode(request.form['original'])])
-    id_encoded = encode(cur.lastrowid)
+    with get_db() as conn:
+        cursor = conn.cursor()
+        query = cursor.execute('INSERT INTO links (originalURL) VALUES (?)',
+                               [encode(request.form['original'])])
+        id_encoded = encode(query.lastrowid)
 
     return render_template('base.html', link=id_encoded)
 
 
 @app.route('/<link>', methods=['POST', 'GET'])
 def reroute(link):
-    db = get_db()
-    cur = db.execute('SELECT originalURL FROM links WHERE id = (?)', [decode(link)])
-
-    link = decode(cur.fetchone()[0])
+    with get_db() as conn:
+        cursor = conn.cursor()
+        query = cursor.execute('SELECT originalURL FROM links WHERE id = (?)',
+                               [decode(link)])
+        link = decode(query.fetchone()[0])
 
     return redirect(link)
