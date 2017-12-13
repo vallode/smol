@@ -63,8 +63,8 @@ def index():
 
         with get_db() as conn:
             cursor = conn.cursor()
-        query = cursor.execute('INSERT INTO links (originalURL) VALUES (?)',
-                               [encode(request.form['original'])])
+            query = cursor.execute('INSERT INTO links (originalURL) VALUES (?)',
+                                   [encode(request.form['original'])])
         id_encoded = encode(query.lastrowid)
 
         return render_template('base.html', link=id_encoded)
