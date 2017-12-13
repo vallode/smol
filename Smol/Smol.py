@@ -76,10 +76,12 @@ def index():
 def reroute(link):
     with get_db() as conn:
         cursor = conn.cursor()
+
         try:
             query = cursor.execute('SELECT originalURL FROM links WHERE id = (?)',
                                    [decode(link)])
             link = decode(query.fetchone()[0])
             return redirect(link)
+
         except:
             return render_template('base.html')
