@@ -79,5 +79,5 @@ def reroute(link):
                                    [decode(link)])
             link = decode(query.fetchone()[0])
             return redirect(link)
-        finally:
+        except:
             return render_template('base.html')
