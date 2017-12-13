@@ -74,8 +74,10 @@ def shorten_link():
 def reroute(link):
     with get_db() as conn:
         cursor = conn.cursor()
-        query = cursor.execute('SELECT originalURL FROM links WHERE id = (?)',
-                               [decode(link)])
-        link = decode(query.fetchone()[0])
-
-    return redirect(link)
+        try:
+            query = cursor.execute('SELECT originalURL FROM links WHERE id = (?)',
+                                   [decode(link)])
+            link = decode(query.fetchone()[0])
+            return redirect(link)
+        finally:
+            return render_template('base.html')
