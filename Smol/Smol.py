@@ -61,6 +61,9 @@ def shorten_link():
     if not validators.url(request.form['original']):
         return render_template('base.html', error='Invalid link, please provide a valid URL')
 
+    if request.form['original'].startswith('http://www.smol.link/'):
+        return render_template('base.html', error='We do not shorten our own links :)')
+
     with get_db() as conn:
         cursor = conn.cursor()
         query = cursor.execute('INSERT INTO links (originalURL) VALUES (?)',
