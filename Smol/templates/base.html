@@ -37,7 +37,7 @@
     </header>
 
     <div class='submit'>
-        <form action='{{ url_for("shorten_link") }}' method='POST' class='add-entry'>
+        <form action='{{ url_for("index") }}' method='POST' class='add-entry'>
             {% if link %}
                 <input title='Link' id='linkIO' type='text' name='original' value='http://www.smol.link/{{ link }}'/>
                 <script type="text/javascript">

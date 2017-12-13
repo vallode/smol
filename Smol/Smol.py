@@ -48,29 +48,28 @@ def decode(u):
     return str(base64.b64decode(bytes(str(u), 'UTF-8')), 'UTF-8')
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
-    return render_template('base.html')
-
-
-@app.route('/shorten', methods=['POST', 'GET'])
-def shorten_link():
     if request.method == 'GET':
         return render_template('base.html')
 
-    if not validators.url(request.form['original']):
-        return render_template('base.html', error='Invalid link, please provide a valid URL')
+    if request.method == 'POST':
 
-    if request.form['original'].startswith('http://www.smol.link/'):
-        return render_template('base.html', error='We do not shorten our own links :)')
+        if not validators.url(request.form['original']):
+            return render_template('base.html', error='Invalid link, please provide a valid URL')
 
-    with get_db() as conn:
-        cursor = conn.cursor()
+        if 'www.smol.link' in request.form['original']:
+            return render_template('base.html', error='We do not shorten our own links :)')
+
+        with get_db() as conn:
+            cursor = conn.cursor()
         query = cursor.execute('INSERT INTO links (originalURL) VALUES (?)',
                                [encode(request.form['original'])])
         id_encoded = encode(query.lastrowid)
 
-    return render_template('base.html', link=id_encoded)
+        return render_template('base.html', link=id_encoded)
+
+    return render_template('base.html')
 
 
 @app.route('/<link>', methods=['POST', 'GET'])
