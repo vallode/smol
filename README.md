@@ -1,3 +1,3 @@
-# Smol
+# Smol.link
 
-A stupid simple URL shortener mostly for personal use
+A tiny link shortener written in Python3 using Flask.
