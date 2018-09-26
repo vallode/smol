@@ -8,6 +8,7 @@ import base64
 import logging
 import os
 import psycopg2
+import requests
 from flask import Flask, render_template, request, send_from_directory, abort, Response, redirect
 
 APP = Flask(__name__)
@@ -60,6 +61,41 @@ def b64_decode(data):
     return base64.urlsafe_b64decode(data)
 
 
+def validate_link(link):
+    """Checks to ensure link is valid
+
+    First checks for 'smol.link' existing in link, to avoid recursive links.
+    Attempts to ping the link, if the request is successful passes on. The
+    request is on a short timeout to avoid waiting for non-existent sites.
+
+    Args:
+        link (str): User specified string to be shortened
+
+    Returns:
+        True: If the link is valid and does not lead to the website itself
+
+        False: If link fails a single check
+    """
+    if "smol.link" in link:
+        logging.debug("Smol.link appears in link, rejecting")
+        return False
+
+    try:
+        logging.debug("Requesting link")
+        ping = requests.get(link, timeout=2)
+
+    except requests.exceptions.ConnectionError:
+        logging.debug("Link does not exist")
+        return False
+
+    if ping.status_code != 200:
+        logging.debug("Link did not respond with 200")
+        return False
+
+    logging.debug("Link successfully passed tests")
+    return True
+
+
 @APP.route('/', methods=['get', 'post'])
 def index():
     """Handles the serving of the index page as well as shortening links in the form
@@ -70,6 +106,12 @@ def index():
     """
     if request.form:
         logging.debug("Link requested: %s", request.form['link'])
+
+        logging.debug("Checking link")
+
+        if not validate_link(request.form['link']):
+            return render_template('index.html')
+
         link = b64_encode(request.form['link']).decode()
 
         db = get_db()
