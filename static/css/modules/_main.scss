@@ -14,13 +14,13 @@ body {
     background: $white;
 }
 
-a {
-    font-weight: normal;
-    text-decoration: none;
-}
-
 .title {
     font-size: 5em;
+
+    a {
+        font-weight: normal;
+        text-decoration: none;
+    }
 
     span {
         color: $green;
@@ -71,5 +71,18 @@ a {
 
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 2px;
+    }
+}
+
+footer {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+    bottom: 0;
+
+    a {
+        color: $green;
     }
 }
