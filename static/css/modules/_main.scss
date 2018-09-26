@@ -1,0 +1,75 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    line-height: 1.3;
+
+    color: $black;
+    background: $white;
+}
+
+a {
+    font-weight: normal;
+    text-decoration: none;
+}
+
+.title {
+    font-size: 5em;
+
+    span {
+        color: $green;
+    }
+}
+
+.form {
+    position: relative;
+    display: flex;
+
+    &:focus-within {
+        #link {
+            width: 550px;
+        }
+    }
+
+    #link {
+        position: relative;
+
+        color: $black;
+        background: $white;
+
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 0;
+        border: none;
+        border-bottom: solid $green 2px;
+
+        width: 250px;
+        max-width: 70vw;
+
+        height: 30px;
+
+        padding: 0.5em 0.5em;
+
+        transition: all 0.25s ease;
+    }
+
+    input[type="submit"] {
+        position: relative;
+
+        color: $white;
+        background: $green;
+
+        font-weight: bold;
+
+        border: none;
+        border-bottom: solid $green 2px;
+
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 2px;
+    }
+}

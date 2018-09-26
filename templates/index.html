@@ -3,13 +3,19 @@
 <head>
     <meta charset='utf-8'>
     <title>Smol.link</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
 
-    <h1>Smol.link</h1>
-    <form action="{{ url_for('index') }}" method="post">
-        <input title="link" id="link" type="text" name="link" value="{{ link }}">
-    </form>
+<h1 class="title"><a href="/">Smol<span>.</span>link</a></h1>
+<form class="form" action="{{ url_for('index') }}" method="post">
+    <input title="link" id="link" type="text" name="link" autofocus autocomplete="off" value="{{ link }}">
 
+    <input type="submit" value="submit">
+</form>
+
+<link rel="preload" href="{{ url_for('static', filename='css/main.css') }}" as="style" onload="this.rel='stylesheet'">
+<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 </body>
 </html>
