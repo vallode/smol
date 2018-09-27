@@ -4,7 +4,18 @@
     <meta charset='utf-8'>
     <title>Smol.link</title>
 
+    <meta name="description" content="Shorten all your links with smol.link">
+    <meta property="og:description" content="Shorten all your links with smol.link">
+
+    <link rel="canonical" href="https://smol.link/">
+    <meta property="og:url" content="https://smol.link/">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@Vallode_">
+    <meta name="twitter:creator" content="@Vallode_">
+
     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <meta property="og:image" content="{{ url_for('static', filename='img/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
@@ -17,10 +28,11 @@
 </form>
 
 <footer>
-    <p>Made by <a href="https://vallode.com/">me</a>. Take a peek at the <a href="https://github.com/vallode/smol">code</a>.</p>
+    <p>Made by <a href="https://vallode.com/">me</a>. Take a peek at the <a
+            href="https://github.com/vallode/smol">code</a>.</p>
 </footer>
 
-<link rel="preload" href="{{ url_for('static', filename='css/main.css') }}" as="style" onload="this.rel='stylesheet'">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 </body>
 </html>
