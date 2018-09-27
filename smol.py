@@ -9,10 +9,14 @@ import logging
 import os
 import psycopg2
 import requests
+import config
 from flask import Flask, render_template, request, send_from_directory, abort, Response, redirect
 
 APP = Flask(__name__)
-logging.basicConfig(level=logging.DEBUG)
+
+APP.config.from_object(config.DevelopmentConfig)
+
+logging.basicConfig(level=APP.config['LOGGING'])
 
 
 def get_db():
@@ -149,14 +153,18 @@ def short(link_id):
     try:
         link = b64_decode(link_id).decode()
     except:
-        return abort(404, "Link does not exist")
+        return abort(400, "Please check your link")
 
     logging.debug("Link decoded: %s", link)
 
     db = get_db()
     cur = db.cursor()
 
-    cur.execute("SELECT original FROM links WHERE id = (%s)", (link, ))
+    try:
+        cur.execute("SELECT original FROM links WHERE id = (%s)", (link, ))
+    except psycopg2.DatabaseError:
+        return abort(404, "Link does not exist")
+
     original = str(b64_decode(cur.fetchone()[0]).decode())
 
     cur.close()
@@ -170,6 +178,11 @@ def short(link_id):
 @APP.errorhandler(500)
 def error500(error):
     logging.critical("500 error")
+    return render_template("error.html", message=error.description)
+
+
+@APP.errorhandler(400)
+def error500(error):
     return render_template("error.html", message=error.description)
 
 
