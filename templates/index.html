@@ -17,10 +17,12 @@
 </form>
 
 <footer>
-    <p>Made by <a href="https://vallode.com/">me</a>. Take a peek at the <a href="https://github.com/vallode/smol">code</a>.</p>
+    <p>Made by <a href="https://vallode.com/">me</a>. Take a peek at the <a
+            href="https://github.com/vallode/smol">code</a>.</p>
 </footer>
 
-<link rel="preload" href="{{ url_for('static', filename='css/main.css') }}" as="style" onload="this.rel='stylesheet'" onerror="this.rel='stylesheet'">
+<link rel="preload" src="{{ url_for('static', filename='css/main.css') }}" as="style" onload="this.rel='stylesheet'"
+      onerror="this.rel='stylesheet'">
 <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 </body>
 </html>
