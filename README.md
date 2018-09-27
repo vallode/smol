@@ -4,8 +4,11 @@ A tiny link shortener written in Python3 using Flask.
 
 ## Running
 
-Create a user `smol` with a database named `smol`
-(or whatever you set in the configuration)
+Edit `config.py` to your suited production settings, make sure to adjust 
+`DATABASE_NAME`, `DATABASE_USER`, and `DATABASE_PASS` to your database variables.
 
-`source env/bin/activate`  
-`env FLASK_APP=smol.py FLASK_DEBUG=True FLASK_ENV=development flask run`  
+Create your user, the database and run the schema:
+`psql "dbname=smol host=localhost user=smol password=smol" -a -f schema.sql`  
+replacing the correct database details.
+
+To run, simply set `FLASK_APP` to `smol.py` and execute: `flask run`
