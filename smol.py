@@ -76,6 +76,10 @@ def validate_link(link):
 
         False: If link fails a single check
     """
+    if link == "":
+        logging.debug("Link empty, failing")
+        return False
+
     if "smol.link" in link:
         logging.debug("Smol.link appears in link, rejecting")
         return False
@@ -142,7 +146,10 @@ def short(link_id):
     """
     logging.debug("Link id: %s", link_id)
 
-    link = b64_decode(link_id).decode()
+    try:
+        link = b64_decode(link_id).decode()
+    except:
+        return abort(Response("404: Link not found"))
 
     logging.debug("Link decoded: %s", link)
 
@@ -158,13 +165,3 @@ def short(link_id):
     logging.debug("Outgoing link: %s", original)
 
     return redirect(original)
-
-
-@APP.route('/favicon.ico')
-def favicon():
-    """Returns the favicon for the site
-
-    Returns:
-        favicon.ico
-    """
-    return send_from_directory(os.path.join(APP.root_path, 'static'), 'favicon.ico')
