@@ -9,10 +9,13 @@ import logging
 import os
 import psycopg2
 import requests
+import config
 from flask import Flask, render_template, request, send_from_directory, abort, Response, redirect
 
 APP = Flask(__name__)
-logging.basicConfig(level=logging.DEBUG)
+APP.config.from_object(config.DevelopmentConfig)
+
+logging.basicConfig(level=APP.config['LOGGING'])
 
 
 def get_db():
@@ -87,7 +90,6 @@ def validate_link(link):
     try:
         logging.debug("Requesting link")
         ping = requests.get(link, timeout=2)
-
     except requests.exceptions.ConnectionError:
         logging.debug("Link does not exist")
         return False
@@ -110,7 +112,6 @@ def index():
     """
     if request.form:
         logging.debug("Link requested: %s", request.form['link'])
-
         logging.debug("Checking link")
 
         if not validate_link(request.form['link']):
@@ -148,15 +149,19 @@ def short(link_id):
 
     try:
         link = b64_decode(link_id).decode()
-    except:
-        return abort(404, "Link does not exist")
+    except UnicodeDecodeError:
+        return abort(400, "Please check your link")
 
     logging.debug("Link decoded: %s", link)
 
     db = get_db()
     cur = db.cursor()
 
-    cur.execute("SELECT original FROM links WHERE id = (%s)", (link, ))
+    try:
+        cur.execute("SELECT original FROM links WHERE id = (%s)", (link, ))
+    except psycopg2.DatabaseError:
+        return abort(404, "Link does not exist")
+
     original = str(b64_decode(cur.fetchone()[0]).decode())
 
     cur.close()
@@ -169,10 +174,18 @@ def short(link_id):
 
 @APP.errorhandler(500)
 def error500(error):
+    """Handles serving 500 error pages"""
     logging.critical("500 error")
-    return render_template("error.html", message=error.description)
+    return render_template("error.html", message=error.description), 500
+
+
+@APP.errorhandler(400)
+def error500(error):
+    """Handles serving 400 error pages"""
+    return render_template("error.html", message=error.description), 400
 
 
 @APP.errorhandler(404)
 def error500(error):
-    return render_template("error.html", message=error.description)
+    """Handles serving 404 error pages"""
+    return render_template("error.html", message=error.description), 404
