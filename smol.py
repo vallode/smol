@@ -90,7 +90,7 @@ def validate_link(link):
     try:
         logging.debug("Requesting link")
         ping = requests.get(link, timeout=2)
-    except requests.exceptions.ConnectionError:
+    except:
         logging.debug("Link does not exist")
         return False
 
