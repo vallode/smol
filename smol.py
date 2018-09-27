@@ -13,8 +13,7 @@ import config
 from flask import Flask, render_template, request, send_from_directory, abort, Response, redirect
 
 APP = Flask(__name__)
-
-APP.config.from_object(config.ProductionConfig)
+APP.config.from_object(config.DevelopmentConfig)
 
 logging.basicConfig(level=APP.config['LOGGING'])
 
@@ -113,7 +112,6 @@ def index():
     """
     if request.form:
         logging.debug("Link requested: %s", request.form['link'])
-
         logging.debug("Checking link")
 
         if not validate_link(request.form['link']):
