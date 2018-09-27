@@ -91,7 +91,6 @@ def validate_link(link):
     try:
         logging.debug("Requesting link")
         ping = requests.get(link, timeout=2)
-
     except requests.exceptions.ConnectionError:
         logging.debug("Link does not exist")
         return False
@@ -152,7 +151,7 @@ def short(link_id):
 
     try:
         link = b64_decode(link_id).decode()
-    except:
+    except UnicodeDecodeError:
         return abort(400, "Please check your link")
 
     logging.debug("Link decoded: %s", link)
@@ -179,16 +178,16 @@ def short(link_id):
 def error500(error):
     """Handles serving 500 error pages"""
     logging.critical("500 error")
-    return render_template("error.html", message=error.description)
+    return render_template("error.html", message=error.description), 500
 
 
 @APP.errorhandler(400)
 def error500(error):
     """Handles serving 400 error pages"""
-    return render_template("error.html", message=error.description)
+    return render_template("error.html", message=error.description), 400
 
 
 @APP.errorhandler(404)
 def error500(error):
     """Handles serving 404 error pages"""
-    return render_template("error.html", message=error.description)
+    return render_template("error.html", message=error.description), 404
