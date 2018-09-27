@@ -24,7 +24,7 @@ def get_db():
     try:
         conn = psycopg2.connect("dbname=smol host=localhost user=smol password=smol")
     except psycopg2.Error:
-        return abort(Response("500: We screwed up"))
+        return abort(500, "Something on our servers went wrong")
 
     logging.debug("Connection to db established: %s", conn)
     return conn
@@ -149,7 +149,7 @@ def short(link_id):
     try:
         link = b64_decode(link_id).decode()
     except:
-        return abort(Response("404: Link not found"))
+        return abort(404, "Link does not exist")
 
     logging.debug("Link decoded: %s", link)
 
@@ -165,3 +165,14 @@ def short(link_id):
     logging.debug("Outgoing link: %s", original)
 
     return redirect(original)
+
+
+@APP.errorhandler(500)
+def error500(error):
+    logging.critical("500 error")
+    return render_template("error.html", message=error.description)
+
+
+@APP.errorhandler(404)
+def error500(error):
+    return render_template("error.html", message=error.description)
