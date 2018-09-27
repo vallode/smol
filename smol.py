@@ -14,7 +14,7 @@ from flask import Flask, render_template, request, send_from_directory, abort, R
 
 APP = Flask(__name__)
 
-APP.config.from_object(config.DevelopmentConfig)
+APP.config.from_object(config.ProductionConfig)
 
 logging.basicConfig(level=APP.config['LOGGING'])
 
@@ -177,15 +177,18 @@ def short(link_id):
 
 @APP.errorhandler(500)
 def error500(error):
+    """Handles serving 500 error pages"""
     logging.critical("500 error")
     return render_template("error.html", message=error.description)
 
 
 @APP.errorhandler(400)
 def error500(error):
+    """Handles serving 400 error pages"""
     return render_template("error.html", message=error.description)
 
 
 @APP.errorhandler(404)
 def error500(error):
+    """Handles serving 404 error pages"""
     return render_template("error.html", message=error.description)

@@ -12,3 +12,5 @@ Create your user, the database and run the schema:
 replacing the correct database details.
 
 To run, simply set `FLASK_APP` to `smol.py` and execute: `flask run`
+
+Note: Make sure to set `FLASK_ENV` to `development` if you are running it locally.
