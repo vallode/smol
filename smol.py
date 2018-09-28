@@ -50,8 +50,6 @@ def b64_encode(data):
     Returns:
         (str): A base64 encoded string
     """
-    print(type(data))
-    print(data)
     data = base64.urlsafe_b64encode(data.encode())
 
     return str(data, 'UTF-8')
@@ -153,13 +151,13 @@ def insert_link(link):
         link (str): Base64 encoded link
 
     Returns:
-        link_id (int): Id of the inserted link
+        link_id (str): Id of the inserted link
     """
     database = get_db()
     cur = database.cursor()
 
     cur.execute("INSERT INTO links (original) VALUES (%s) RETURNING id", (link,))
-    link_id = cur.fetchone()[0]
+    link_id = str(cur.fetchone()[0])
 
     cur.close()
     close_db(database)
@@ -194,7 +192,7 @@ def index():
 
 
 @APP.route('/<link_id>')
-def redirect(link_id):
+def redirect_link(link_id):
     """Redirects a successful database match to its stored link
 
     Args:
