@@ -6,11 +6,12 @@ Smol.link is a tiny url shortener written for personal and limited outside use.
 
 import base64
 import logging
-import os
+
 import psycopg2
 import requests
+from flask import Flask, render_template, request, abort, redirect
+
 import config
-from flask import Flask, render_template, request, send_from_directory, abort, Response, redirect
 
 APP = Flask(__name__)
 APP.config.from_object(config.DevelopmentConfig)
@@ -119,14 +120,14 @@ def index():
 
         link = b64_encode(request.form['link']).decode()
 
-        db = get_db()
-        cur = db.cursor()
+        database = get_db()
+        cur = database.cursor()
 
-        cur.execute("INSERT INTO links (original) VALUES (%s) RETURNING id", (link, ))
+        cur.execute("INSERT INTO links (original) VALUES (%s) RETURNING id", (link,))
         link = request.url + str(b64_encode(str(cur.fetchone()[0])), 'UTF-8')
 
         cur.close()
-        close_db(db)
+        close_db(database)
 
         return render_template('index.html', link=link)
 
@@ -154,18 +155,18 @@ def short(link_id):
 
     logging.debug("Link decoded: %s", link)
 
-    db = get_db()
-    cur = db.cursor()
+    database = get_db()
+    cur = database.cursor()
 
     try:
-        cur.execute("SELECT original FROM links WHERE id = (%s)", (link, ))
+        cur.execute("SELECT original FROM links WHERE id = (%s)", (link,))
     except psycopg2.DatabaseError:
         return abort(404, "Link does not exist")
 
     original = str(b64_decode(cur.fetchone()[0]).decode())
 
     cur.close()
-    close_db(db)
+    close_db(database)
 
     logging.debug("Outgoing link: %s", original)
 
@@ -180,12 +181,12 @@ def error500(error):
 
 
 @APP.errorhandler(400)
-def error500(error):
+def error400(error):
     """Handles serving 400 error pages"""
     return render_template("error.html", message=error.description), 400
 
 
 @APP.errorhandler(404)
-def error500(error):
+def error404(error):
     """Handles serving 404 error pages"""
     return render_template("error.html", message=error.description), 404
