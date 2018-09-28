@@ -2,6 +2,14 @@
 
 A tiny link shortener written in Python3 using Flask.  
 
+## To-do
+
+- [x] Initial launch
+- [x] Redesign and refactor
+- [ ] API endpoint
+- [ ] Duplicate link detection
+- [ ] Link usage statistics 
+
 ## Running
 
 Edit `config.py` to your suited production settings, make sure to adjust 
