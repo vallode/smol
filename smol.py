@@ -45,12 +45,16 @@ def b64_encode(data):
     """Encodes string to UTF-8 and converts to Base64
 
     Args:
-        data (str): String to encode
+        data: Data to encode
 
     Returns:
         (str): A base64 encoded string
     """
-    return base64.urlsafe_b64encode(data.encode())
+    print(type(data))
+    print(data)
+    data = base64.urlsafe_b64encode(data.encode())
+
+    return str(data, 'UTF-8')
 
 
 def b64_decode(data):
@@ -62,7 +66,9 @@ def b64_decode(data):
     Returns:
         (str): A decoded string
     """
-    return base64.urlsafe_b64decode(data)
+    data = base64.urlsafe_b64decode(data)
+
+    return str(data, 'UTF-8')
 
 
 def validate_link(link):
@@ -80,12 +86,12 @@ def validate_link(link):
 
         False: If link fails a single check
     """
-    if link == "":
+    if not link:
         logging.debug("Link empty, failing")
         return False
 
-    if "smol.link" in link:
-        logging.debug("Smol.link appears in link, rejecting")
+    if "smol.link" in link.lower():
+        logging.debug("smol.link appears in link, rejecting")
         return False
 
     try:
@@ -103,6 +109,64 @@ def validate_link(link):
     return True
 
 
+def get_link(link_id):
+    """Selects link from database
+
+    Checks if id exists in database
+
+    Args:
+        link_id (str): Link id
+
+    Returns:
+        original (str): String containing original link
+
+        400: If link cannot be decoded
+
+        404: If link is not found in the database
+    """
+    try:
+        link_id = b64_decode(link_id)
+        logging.debug("Link id decoded: %s", link_id)
+    except UnicodeDecodeError:
+        return abort(400, "Please check your link")
+
+    database = get_db()
+    cur = database.cursor()
+
+    try:
+        cur.execute("SELECT original FROM links WHERE id = (%s)", (link_id,))
+    except psycopg2.DatabaseError:
+        return abort(404, "Link does not exist")
+
+    original = b64_decode(cur.fetchone()[0])
+
+    cur.close()
+    close_db(database)
+
+    return original
+
+
+def insert_link(link):
+    """Inserts link into database returning id
+
+    Args:
+        link (str): Base64 encoded link
+
+    Returns:
+        link_id (int): Id of the inserted link
+    """
+    database = get_db()
+    cur = database.cursor()
+
+    cur.execute("INSERT INTO links (original) VALUES (%s) RETURNING id", (link,))
+    link_id = cur.fetchone()[0]
+
+    cur.close()
+    close_db(database)
+
+    return link_id
+
+
 @APP.route('/', methods=['get', 'post'])
 def index():
     """Handles the serving of the index page as well as shortening links in the form
@@ -112,22 +176,17 @@ def index():
         the index page populated by the shortened link
     """
     if request.form:
-        logging.debug("Link requested: %s", request.form['link'])
+        link = request.form['link']
+        logging.debug("Link requested: %s", link)
         logging.debug("Checking link")
 
-        if not validate_link(request.form['link']):
+        if not validate_link(link):
             return render_template('index.html')
 
-        link = b64_encode(request.form['link']).decode()
+        link = b64_encode(link)
 
-        database = get_db()
-        cur = database.cursor()
-
-        cur.execute("INSERT INTO links (original) VALUES (%s) RETURNING id", (link,))
-        link = request.url + str(b64_encode(str(cur.fetchone()[0])), 'UTF-8')
-
-        cur.close()
-        close_db(database)
+        link_id = insert_link(link)
+        link = request.url + b64_encode(link_id)
 
         return render_template('index.html', link=link)
 
@@ -135,7 +194,7 @@ def index():
 
 
 @APP.route('/<link_id>')
-def short(link_id):
+def redirect(link_id):
     """Redirects a successful database match to its stored link
 
     Args:
@@ -148,25 +207,7 @@ def short(link_id):
     """
     logging.debug("Link id: %s", link_id)
 
-    try:
-        link = b64_decode(link_id).decode()
-    except UnicodeDecodeError:
-        return abort(400, "Please check your link")
-
-    logging.debug("Link decoded: %s", link)
-
-    database = get_db()
-    cur = database.cursor()
-
-    try:
-        cur.execute("SELECT original FROM links WHERE id = (%s)", (link,))
-    except psycopg2.DatabaseError:
-        return abort(404, "Link does not exist")
-
-    original = str(b64_decode(cur.fetchone()[0]).decode())
-
-    cur.close()
-    close_db(database)
+    original = get_link(link_id)
 
     logging.debug("Outgoing link: %s", original)
 
