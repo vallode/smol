@@ -226,7 +226,7 @@ def api_shorten():
         original (str): Original user supplied link
     """
     try:
-        data = request.args['link']
+        data = request.form['link']
     except:
         return jsonify({'success': False, 'error': 'Failed to check arguements'})
 
@@ -234,7 +234,7 @@ def api_shorten():
         logging.debug("No args provided")
         return jsonify({'success': False, 'error': 'No args provided'})
 
-    if 'link' not in request.args:
+    if 'link' not in request.form:
         logging.debug("No valid arguments provided")
         return jsonify({'success': False, 'error': 'No valid arguments provided'})
 
