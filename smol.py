@@ -9,7 +9,7 @@ import logging
 
 import psycopg2
 import requests
-from flask import Flask, render_template, request, abort, redirect
+from flask import Flask, render_template, request, abort, redirect, jsonify
 
 import config
 
@@ -210,6 +210,23 @@ def redirect_link(link_id):
     logging.debug("Outgoing link: %s", original)
 
     return redirect(original)
+
+
+#: API
+@APP.route('/api/v1/shorten', methods=['POST'])
+def api_shorten():
+    data = request.get_json(force=True)
+
+    if not data:
+        logging.debug("No JSON provided")
+        return jsonify({'status': '400'})
+
+    link = b64_encode(data['link'])
+
+    link_id = insert_link(link)
+    link = request.url_root + b64_encode(link_id)
+
+    return jsonify({'status': '200', 'link': link, 'original': data['link']})
 
 
 @APP.errorhandler(500)
