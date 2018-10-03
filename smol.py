@@ -215,18 +215,35 @@ def redirect_link(link_id):
 #: API
 @APP.route('/api/v1/shorten', methods=['POST'])
 def api_shorten():
-    data = request.get_json(force=True)
+    """API endpoint to shorten link
+
+    Args:
+        {'link'} (str): Link to shorten
+
+    Returns:
+        Success (bool): Returns bool depending on success of shortening link
+        link (str): Shortened link
+        original (str): Original user supplied link
+    """
+    try:
+        data = request.get_json(force=True)
+    except:
+        return jsonify({'success': False, 'error': 'Failed to parse JSON data'})
 
     if not data:
-        logging.debug("No JSON provided")
-        return jsonify({'status': '400'})
+        logging.debug("No JSON data provided")
+        return jsonify({'success': False, 'error': 'No JSON data provided'})
+
+    if 'link' not in data:
+        logging.debug("No valid JSON provided")
+        return jsonify({'success': False, 'error': 'No valid JSON provided'})
 
     link = b64_encode(data['link'])
 
     link_id = insert_link(link)
     link = request.url_root + b64_encode(link_id)
 
-    return jsonify({'status': '200', 'link': link, 'original': data['link']})
+    return jsonify({'success': True, 'link': link, 'original': data['link']})
 
 
 @APP.errorhandler(500)
