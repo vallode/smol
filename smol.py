@@ -218,7 +218,7 @@ def api_shorten():
     """API endpoint to shorten link
 
     Args:
-        {'link'} (str): Link to shorten
+        link (str): Link to shorten
 
     Returns:
         Success (bool): Returns bool depending on success of shortening link
@@ -226,24 +226,24 @@ def api_shorten():
         original (str): Original user supplied link
     """
     try:
-        data = request.get_json(force=True)
+        data = request.args['link']
     except:
-        return jsonify({'success': False, 'error': 'Failed to parse JSON data'})
+        return jsonify({'success': False, 'error': 'Failed to check arguements'})
 
     if not data:
-        logging.debug("No JSON data provided")
-        return jsonify({'success': False, 'error': 'No JSON data provided'})
+        logging.debug("No args provided")
+        return jsonify({'success': False, 'error': 'No args provided'})
 
-    if 'link' not in data:
-        logging.debug("No valid JSON provided")
-        return jsonify({'success': False, 'error': 'No valid JSON provided'})
+    if 'link' not in request.args:
+        logging.debug("No valid arguments provided")
+        return jsonify({'success': False, 'error': 'No valid arguments provided'})
 
-    link = b64_encode(data['link'])
+    link = b64_encode(data)
 
     link_id = insert_link(link)
     link = request.url_root + b64_encode(link_id)
 
-    return jsonify({'success': True, 'link': link, 'original': data['link']})
+    return jsonify({'success': True, 'link': link, 'original': data})
 
 
 @APP.errorhandler(500)
