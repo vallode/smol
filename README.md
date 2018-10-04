@@ -2,6 +2,21 @@
 
 A tiny link shortener written in Python3 using Flask.  
 
+## API
+
+`/api/v1`  
+Base endpoint for all future v1 API calls  
+  
+###`/api/v1/shorten`   
+**Args:**  
+> `link` (str) : Form body data that you want shortened 
+
+**Returns:**  
+> `success` (Bool) : Dependant on success of operation  
+`original` (str) : Original link given to API  
+`link` (str) : Shortened link for your use  
+
+
 ## To-do
 
 - [x] Initial launch
